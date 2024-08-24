@@ -3,46 +3,61 @@
 #include <string.h>
 #include <stdlib.h>
 
-int main(int argc, char* argv[]) {
-    assert(argc == 2); // TODO: remove
-
-    char* diretorios_raw = argv[1];
-
-    int len = 0, dir_cnt = 1, cur_dir_size = 0, max_dir_size = 0;
-    while (diretorios_raw[len] != '\0') {
-        cur_dir_size++;
-        if (max_dir_size < cur_dir_size)
-            max_dir_size = cur_dir_size;
-        if (diretorios_raw[len] == ':') {
-            cur_dir_size = 0;
-            dir_cnt++;
-        }
+char** split(char* s, char sep, int* size) {
+    int len = 0, n = 1;
+    while (s[len] != '\0' && s[len] != '\n') {
+        if (s[len] == sep)
+            n++;
         len++;
     }
-    max_dir_size++;
+    *size = n;
 
-    char** diretorios = malloc(dir_cnt * sizeof(char *));
+    char** arr = malloc(n * sizeof(char *));
+    int cur_str = 0, cur_str_size = 0;
 
-    for (int i = 0; i < dir_cnt; ++i)
-        diretorios[i] = malloc(max_dir_size * sizeof(char));
-
-
-    int cur_dir = 0, cur_dir_pos = 0;
     for (int i = 0; i <= len; ++i) {
-        if (diretorios_raw[i] == ':' || diretorios_raw[i] == '\0') {
-            diretorios[cur_dir][cur_dir_pos] = '\0';
-            cur_dir++;
-            cur_dir_pos = 0;
+        if (s[i] == sep || s[i] == '\0' || s[i] == '\n') {
+            arr[cur_str] = malloc((cur_str_size + 1) * sizeof(char)); 
+            cur_str++;
+            cur_str_size = 0;
         } else {
-            diretorios[cur_dir][cur_dir_pos] = diretorios_raw[i];
-            cur_dir_pos++;
+            cur_str_size++;
         }
     }
-    
+
+    cur_str = 0, cur_str_size = 0;
+    for (int i = 0; i <= len; ++i) {
+        if (s[i] == sep || s[i] == '\0' || s[i] == '\n') {
+            arr[cur_str][cur_str_size] = '\0'; 
+            cur_str++;
+            cur_str_size = 0;
+        } else {
+            arr[cur_str][cur_str_size] = s[i]; 
+            cur_str_size++;
+        }
+    }
+
+    return arr;
+}
+
+char** read_command(int* sz) {
+    printf("simple-shell$: ");
+    char* comando_raw = NULL;
+    size_t size;
+    ssize_t len = getline(&comando_raw, &size, stdin);
+    return split(comando_raw, ' ', sz);
+}
+
+int main(int argc, char* argv[]) {
+    char* diretorios_raw = argv[1];
+
+    int dir_cnt;
+    char** diretorios = split(diretorios_raw, ':', &dir_cnt); 
     for (int i = 0; i < dir_cnt; i++){
         printf("%s\n", diretorios[i]);
     }
 
+    // read_command();
 
     for (int i = 0; i < dir_cnt; ++i)
         free(diretorios[i]);

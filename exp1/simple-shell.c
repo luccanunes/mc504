@@ -53,16 +53,18 @@ int main(int argc, char* argv[]) {
 
     int dir_cnt;
     char** diretorios = split(diretorios_raw, ':', &dir_cnt); 
-    for (int i = 0; i < dir_cnt; i++){
-        printf("%s\n", diretorios[i]);
-    }
 
-    // read_command();
+    int cmd_cnt;
+    char** comandos;
+    comandos = read_command(&cmd_cnt);
 
     for (int i = 0; i < dir_cnt; ++i)
         free(diretorios[i]);
     free(diretorios);
-    // printf("%d\n", argc);
-    // printf("%s\n", diretorios);
+
+    for (int i = 0; i < cmd_cnt; ++i)
+        free(comandos[i]);
+    free(comandos);
+
     return 0;
 }

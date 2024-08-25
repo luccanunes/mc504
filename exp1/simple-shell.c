@@ -61,7 +61,7 @@ char** read_command(int* sz) {
     printf("simple-shell$: ");
     char* comando_raw = NULL;
     size_t size;
-    ssize_t len = getline(&comando_raw, &size, stdin);
+    getline(&comando_raw, &size, stdin);
     return split(comando_raw, ' ', sz);
 }
 

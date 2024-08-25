@@ -99,7 +99,7 @@ int main(int argc, char* argv[]) {
     }
 
     if(flag == 0)
-        printf("O programa nao existe\n");
+        printf("O programa nao existe nos diretorios fornecidos\n");
 
     for (int i = 0; i < dir_cnt; ++i)
         free(diretorios[i]);

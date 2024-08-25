@@ -84,13 +84,13 @@ int main(int argc, char* argv[]) {
     int cmd_cnt;
     char** comandos;
     comandos = read_command(&cmd_cnt);
-    
+
     int flag = 0;
 
     for(int i = 0; i < dir_cnt; i++){
         char* aux = concatena(diretorios[i], comandos[0]); // diretorios[i] + / + comandos[0]
         if(file_exists(aux)){
-            execv(aux, comandos + 1);
+            execv(aux, comandos);
             free(aux);
             flag = 1;
             break;

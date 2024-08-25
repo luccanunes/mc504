@@ -51,42 +51,20 @@ char** read_command(int* sz) {
     return split(comando_raw, ' ', sz);
 }
 
-int file_exists(const char* dir);
-
-char* concatena(const char* a, const char* b){
-    
+void printv(char *const cmds[]){
+    int i = 0;
+    while(cmds[i] != NULL){
+        printf("%s\n", cmds[i]);
+        i++;
+    }
 }
 
-int main(int argc, char* argv[]) {
-    char* diretorios_raw = argv[1];
-
-    int dir_cnt;
-    char** diretorios = split(diretorios_raw, ':', &dir_cnt); 
-
+int main() {
     int cmd_cnt;
     char** comandos;
     comandos = read_command(&cmd_cnt);
-    
-    int flag = 0;
 
-    for(int i = 0; i < dir_cnt; i++){
-        char* aux = concatena(diretorios[i], comandos[0]); // diretorios[i] + / + comandos[0]
-        if(file_exists(aux)){
-            execv(aux, comandos + 1);
-            free(aux);
-            flag = 1;
-            break;
-        }
-        free(aux);
-    }
-
-    if(flag == 0)
-        printf("O programa nao existe\n");
-
-    for (int i = 0; i < dir_cnt; ++i)
-        free(diretorios[i]);
-    free(diretorios);
-
+    printv(comandos + 1);
 
     for (int i = 0; i < cmd_cnt; ++i)
         free(comandos[i]);

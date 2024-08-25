@@ -51,10 +51,28 @@ char** read_command(int* sz) {
     return split(comando_raw, ' ', sz);
 }
 
-int file_exists(const char* dir);
+int file_exists(const char* filename){
+    FILE *file = fopen(filename, "r");
+    if (file) {
+        fclose(file);
+        return 1; // O arquivo existe
+    }
+    return 0; // O arquivo não existe
+}
 
 char* concatena(const char* a, const char* b){
+    char* ret = malloc((strlen(a) + strlen(b) + 2) * sizeof(char));
+    int i = 0, j = 0;
+
+    for(i = 0; i < strlen(a); i++)
+        ret[i] = a[i];
+    ret[i] = '/';
+
+    for(j = 0; j < strlen(b); j++)
+        ret[i + 1 + j] = b[j];
+    ret[i + j + 1] = '\0';
     
+    return ret;
 }
 
 int main(int argc, char* argv[]) {
@@ -86,7 +104,6 @@ int main(int argc, char* argv[]) {
     for (int i = 0; i < dir_cnt; ++i)
         free(diretorios[i]);
     free(diretorios);
-
 
     for (int i = 0; i < cmd_cnt; ++i)
         free(comandos[i]);

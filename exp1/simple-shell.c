@@ -4,6 +4,14 @@
 #include <stdlib.h>
 #include <unistd.h>
 
+/**
+ * @brief Particiona uma string em um vetor de acordo com um caractere separador
+ *
+ * @param[in] s String a ser particionada
+ * @param[in] sep Caractere separador
+ * @param[out] size Tamanho do vetor resultante
+ * @return Vetor resultante
+ */
 char** split(char* s, char sep, int* size) {
     int len = 0, n = 1;
     while (s[len] != '\0' && s[len] != '\n') {
@@ -43,6 +51,12 @@ char** split(char* s, char sep, int* size) {
     return arr;
 }
 
+/**
+ * @brief Lê um comando da entrada padrão e retorna um vetor com o comando e a lista de argumentos
+ *
+ * @param[out] sz Tamanho do vetor resultante
+ * @return Vetor resultante
+ */
 char** read_command(int* sz) {
     printf("simple-shell$: ");
     char* comando_raw = NULL;
@@ -51,24 +65,37 @@ char** read_command(int* sz) {
     return split(comando_raw, ' ', sz);
 }
 
+/**
+ * @brief Diz se um arquivo existe
+ *
+ * @param[in] filename Caminho para o arquivo
+ * @return 1, se existe; 0, do contrário
+ */
 int file_exists(const char* filename){
     FILE *file = fopen(filename, "r");
     if (file) {
         fclose(file);
-        return 1; // O arquivo existe
+        return 1;
     }
-    return 0; // O arquivo não existe
+    return 0;
 }
 
+/**
+ * @brief Concatena duas strings com o caractere '/' entre elas
+ *
+ * @param[in] a String à esquerda do '/'
+ * @param[in] b String à direita do '/'
+ * @return String resultante
+ */
 char* concatena(const char* a, const char* b){
     char* ret = malloc((strlen(a) + strlen(b) + 2) * sizeof(char));
     int i = 0, j = 0;
 
-    for(i = 0; i < strlen(a); i++)
+    for (i = 0; i < strlen(a); i++)
         ret[i] = a[i];
     ret[i] = '/';
 
-    for(j = 0; j < strlen(b); j++)
+    for (j = 0; j < strlen(b); j++)
         ret[i + 1 + j] = b[j];
     ret[i + j + 1] = '\0';
     

@@ -11,6 +11,9 @@ Feito por
 #include <stdlib.h>
 #include <unistd.h>
 
+#define TRUE 1
+#define FALSE 0
+
 /**
  * @brief Particiona uma string em um vetor de acordo com um caractere separador
  *
@@ -109,6 +112,12 @@ char* concatena(const char* a, const char* b){
     return ret;
 }
 
+void libera(char** lista, int n){
+    for (int i = 0; i < n; ++i)
+        free(lista[i]);
+    free(lista);
+}
+
 int main(int argc, char* argv[]) {
     char* diretorios_raw = argv[1];
 
@@ -117,31 +126,35 @@ int main(int argc, char* argv[]) {
 
     int cmd_cnt;
     char** comandos;
-    comandos = read_command(&cmd_cnt);
 
-    int flag = 0;
+    while(TRUE){
+        comandos = read_command(&cmd_cnt);
 
-    for(int i = 0; i < dir_cnt; i++){
-        char* aux = concatena(diretorios[i], comandos[0]); // diretorios[i] + / + comandos[0]
-        if(file_exists(aux)){
-            execv(aux, comandos);
-            free(aux);
-            flag = 1;
+        if(strcmp(comandos[0], "exit") == 0){
+            libera(comandos, cmd_cnt);
             break;
         }
-        free(aux);
+
+        int flag = 0;
+
+        for(int i = 0; i < dir_cnt; i++){
+            char* aux = concatena(diretorios[i], comandos[0]); // diretorios[i] + / + comandos[0]
+            if(file_exists(aux)){
+                execv(aux, comandos);
+                free(aux);
+                flag = 1;
+                break;
+            }
+            free(aux);
+        }
+
+        if(flag == 0)
+            printf("O programa nao existe nos diretorios fornecidos\n");
+
+        libera(comandos, cmd_cnt);
     }
 
-    if(flag == 0)
-        printf("O programa nao existe nos diretorios fornecidos\n");
-
-    for (int i = 0; i < dir_cnt; ++i)
-        free(diretorios[i]);
-    free(diretorios);
-
-    for (int i = 0; i < cmd_cnt; ++i)
-        free(comandos[i]);
-    free(comandos);
+    libera(diretorios, dir_cnt);
 
     return 0;
 }

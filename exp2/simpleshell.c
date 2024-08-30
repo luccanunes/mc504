@@ -10,6 +10,8 @@ Feito por
 #include <string.h>
 #include <stdlib.h>
 #include <unistd.h>
+#include <sys/types.h>
+#include <sys/wait.h>
 
 #define TRUE 1
 #define FALSE 0
@@ -135,21 +137,38 @@ int main(int argc, char* argv[]) {
             break;
         }
 
-        int flag = 0;
+        if(cmd_cnt == 0) continue;
 
-        for(int i = 0; i < dir_cnt; i++){
-            char* aux = concatena(diretorios[i], comandos[0]); // diretorios[i] + / + comandos[0]
-            if(file_exists(aux)){
-                execv(aux, comandos);
-                free(aux);
-                flag = 1;
-                break;
+        // codigo pai
+        if (fork() != 0) { 
+            if(strcmp(comandos[cmd_cnt - 1], "&") != 0){
+                int status;
+                waitpid(-1, &status, 0);
             }
-            free(aux);
         }
+        // codigo filho
+        else {
+            int flag = 0;
 
-        if(flag == 0)
-            printf("O programa nao existe nos diretorios fornecidos\n");
+            if(strcmp(comandos[cmd_cnt - 1], "&") == 0)
+                comandos[cmd_cnt - 1] = NULL;
+
+            for(int i = 0; i < dir_cnt; i++){
+                char* aux = concatena(diretorios[i], comandos[0]); // diretorios[i] + / + comandos[0]
+                if(file_exists(aux)){
+                    execv(aux, comandos);
+                    free(aux);
+                    flag = 1;
+                    break;
+                }
+                free(aux);
+            }
+
+            if(flag == 0)
+                printf("O programa nao existe nos diretorios fornecidos\n");
+
+            return 0;
+        }
 
         libera(comandos, cmd_cnt);
     }

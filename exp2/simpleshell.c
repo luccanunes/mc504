@@ -83,7 +83,7 @@ char** read_command(int* sz) {
  * @param[in] filename Caminho para o arquivo
  * @return 1, se existe; 0, do contrário
  */
-int file_exists(const char* filename){
+int file_exists(const char* filename) {
     FILE *file = fopen(filename, "r");
     if (file) {
         fclose(file);
@@ -99,7 +99,7 @@ int file_exists(const char* filename){
  * @param[in] b String à direita do '/'
  * @return String resultante
  */
-char* concatena(const char* a, const char* b){
+char* concatena(const char* a, const char* b) {
     char* ret = malloc((strlen(a) + strlen(b) + 2) * sizeof(char));
     int i = 0, j = 0;
 
@@ -114,7 +114,7 @@ char* concatena(const char* a, const char* b){
     return ret;
 }
 
-void libera(char** lista, int n){
+void libera(char** lista, int n) {
     for (int i = 0; i < n; ++i)
         free(lista[i]);
     free(lista);
@@ -129,19 +129,19 @@ int main(int argc, char* argv[]) {
     int cmd_cnt;
     char** comandos;
 
-    while(TRUE){
+    while(TRUE) {
         comandos = read_command(&cmd_cnt);
 
-        if(strcmp(comandos[0], "exit") == 0){
+        if (strcmp(comandos[0], "exit") == 0) {
             libera(comandos, cmd_cnt);
             break;
         }
 
-        if(cmd_cnt == 0) continue;
+        if (cmd_cnt == 0) continue;
 
         // codigo pai
         if (fork() != 0) { 
-            if(strcmp(comandos[cmd_cnt - 1], "&") != 0){
+            if (strcmp(comandos[cmd_cnt - 1], "&") != 0) {
                 int status;
                 waitpid(-1, &status, 0);
             }
@@ -150,12 +150,12 @@ int main(int argc, char* argv[]) {
         else {
             int flag = 0;
 
-            if(strcmp(comandos[cmd_cnt - 1], "&") == 0)
+            if (strcmp(comandos[cmd_cnt - 1], "&") == 0)
                 comandos[cmd_cnt - 1] = NULL;
 
-            for(int i = 0; i < dir_cnt; i++){
+            for (int i = 0; i < dir_cnt; i++) {
                 char* aux = concatena(diretorios[i], comandos[0]); // diretorios[i] + / + comandos[0]
-                if(file_exists(aux)){
+                if (file_exists(aux)) {
                     execv(aux, comandos);
                     free(aux);
                     flag = 1;
@@ -164,7 +164,7 @@ int main(int argc, char* argv[]) {
                 free(aux);
             }
 
-            if(flag == 0)
+            if (flag == 0)
                 printf("Comando não encontrado.\n");
 
             return 0;

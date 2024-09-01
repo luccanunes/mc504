@@ -165,7 +165,7 @@ int main(int argc, char* argv[]) {
             }
 
             if(flag == 0)
-                printf("O programa nao existe nos diretorios fornecidos\n");
+                printf("Comando não encontrado.\n");
 
             return 0;
         }

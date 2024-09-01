@@ -1,5 +1,5 @@
 /*
-MC504 - Experimento 1
+MC504 - Experimento 2
 
 Feito por
 - Lucca Miranda Nunes 230554
